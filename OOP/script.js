@@ -117,7 +117,7 @@
 // ****************** JS classes
 // class expression // classes are just a special type of functions
 
-// class declaration
+//// class declaration
 // class PersonCl {
 //   constructor(fullName, birthYear) {
 //     this.fullName = fullName;
@@ -226,6 +226,17 @@
 // sarah.caclAge(); //58
 
 //**************Coding chalenge 2
+/* 
+1. Re-create challenge 1, but this time using an ES6 class;
+2. Add a getter called 'speedUS' which returns the current speed in mi/h (divide by 1.6);
+3. Add a setter called 'speedUS' which sets the current speed in mi/h (but converts it to km/h before storing the value, by multiplying the input by 1.6);
+4. Create a new car and experiment with the accelerate and brake methods, and with the getter and setter.
+
+DATA CAR 1: 'Ford' going at 120 km/h
+
+GOOD LUCK 😀
+*/
+
 // class CarCl {
 //   constructor(make, speed) {
 //     this.make = make;
@@ -261,40 +272,126 @@
 // v-213
 //***************** Inheritance Between 'Classes': Constructor Functions...
 
-const Person = function (firstName, birthYear) {
-  this.firstName = firstName;
-  this.birthYear = birthYear;
+// const Person = function (firstName, birthYear) {
+//   this.firstName = firstName;
+//   this.birthYear = birthYear;
+// };
+
+// Person.prototype.caclAge = function () {
+//   console.log(2037 - this.birthYear);
+// };
+
+// const Student = function (firstName, birthYear, course) {
+//   this.firstName = firstName;
+//   // Person(firstName, birthYear); //TypeError
+//   Person.call(this, firstName, birthYear);
+//   this.course = course;
+// };
+
+// // //// Linking prototype
+// // Student.prototype = Object.create(Person.prototype);
+
+// Student.prototype.introduce = function () {
+//   console.log(`My name is ${this.firstName} and I study ${this.course}`);
+// };
+
+// const mike = new Student('Mike', 2020, 'Computer Scince');
+// console.log(mike);
+
+// mike.introduce();
+// // mike.caclAge(); //17
+
+// console.log(mike.__proto__);
+// console.log(mike.__proto__.__proto__);
+
+// console.log(mike instanceof Student); // true
+// console.log(mike instanceof Person); // false
+
+// Student.prototype.constructor = Student;
+// console.dir(Student.prototype.constructor);
+
+//******  Coding challenge 3 v-214
+/* 
+1. Use a constructor function to implement an Electric Car (called EV) as a CHILD "class" of Car. Besides a make and current speed, the EV also has the current battery charge in % ('charge' property);
+2. Implement a 'chargeBattery' method which takes an argument 'chargeTo' and sets the battery charge to 'chargeTo';
+3. Implement an 'accelerate' method that will increase the car's speed by 20, and decrease the charge by 1%. Then log a message like this: 'Tesla going at 140 km/h, with a charge of 22%';
+4. Create an electric car object and experiment with calling 'accelerate', 'brake' and 'chargeBattery' (charge to 90%). Notice what happens when you 'accelerate'! HINT: Review the definiton of polymorphism 😉
+
+DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
+
+GOOD LUCK 😀
+*/
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
 };
 
-Person.prototype.caclAge = function () {
-  console.log(2037 - this.birthYear);
+Car.prototype.accelerate = function () {
+  this.speed += 10;
+  console.log(`${this.make} is going at ${this.speed} km/h`);
 };
 
-const Student = function (firstName, birthYear, course) {
-  this.firstName = firstName;
-  // Person(firstName, birthYear); //TypeError
-  Person.call(this, firstName, birthYear);
-  this.course = course;
+Car.prototype.break = function () {
+  this.speed -= 5;
+  console.log(`${this.make} is going at ${this.speed} km/h`);
 };
 
-// //// Linking prototype
-// Student.prototype = Object.create(Person.prototype);
-
-Student.prototype.introduce = function () {
-  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+const EV = function (make, speed, charge) {
+  Car.call(this, make, speed);
+  this.charge = charge;
 };
 
-const mike = new Student('Mike', 2020, 'Computer Scince');
-console.log(mike);
+// Link the prototype
+EV.prototype = Object.create(Car.prototype);
+EV.prototype.chargeBettery = function (chargeTO) {
+  this.charge = chargeTO;
+};
 
-mike.introduce();
-// mike.caclAge(); //17
+// EV.prototype.accelerate = function () {
+//   this.speed += 20;
+//   this.charge--;
+//   console.log(
+//     `${this.make} is going at ${this.speed} km/h, with a charge of ${this.charge}`
+//   );
+// };
 
-console.log(mike.__proto__);
-console.log(mike.__proto__.__proto__);
+const tesla = new EV('Tesla', 120, 23);
+tesla.chargeBettery(90);
+console.log(tesla); // Object { make: "Tesla", speed: 120, charge: 90 }
+tesla.accelerate(); // Tesla is going at 140 km/h, with a charge of 89
 
-console.log(mike instanceof Student); // true
-console.log(mike instanceof Person); // false
+//// ***** Inheritance Between 'Classes' : ES6 Classes
+class PersonCl {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+  // Instance methods
+  /////Methods will be added to .prototype property
+  caclAge() {
+    console.log(2037 - this.birthYear);
+  }
 
-Student.prototype.constructor = Student;
-console.dir(Student.prototype.constructor);
+  greet() {
+    console.log(`Hey ${this.fullName}`);
+  }
+
+  get age() {
+    return 2037 - this.birthYear;
+  }
+
+  // Set a property that already exists
+  set fullName(name) {
+    if (name.includes('')) this._fullName = name;
+    else alert(`${name} is not a full name`);
+  }
+  get fullName() {
+    return this._fullName;
+  }
+
+  // Static method
+  static hey() {
+    console.log('Hey there 🙋‍♂️');
+  }
+}
