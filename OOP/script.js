@@ -395,3 +395,138 @@ class PersonCl {
     console.log('Hey there 🙋‍♂️');
   }
 }
+
+class StudentCL extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    //Always needs to happen first!
+    super(fullName, birthYear); // instade or perant class use super
+    this.course = course;
+  }
+  introduce() {
+    console.log(`My name is ${this.fullName} and I study 'Computer Science'`);
+  }
+  // overright calcAge method
+  caclAge() {
+    console.log(
+      `I'm ${
+        2037 - this.birthYear
+      } years old, but as a student I feel more like ${
+        2037 - this.birthYear + 10
+      }`
+    );
+  }
+}
+
+const martha = new StudentCL('Martha Jonas', 2012, 'Coumputer Science');
+//console.log(martha);
+
+martha.introduce(); // My name is Martha Jonas and I study 'Computer Science'
+martha.caclAge(); // 25
+
+// v-216
+//// Inheritance Between 'Classes': Object.create
+
+const personProto = {
+  caclAge() {
+    console.log(2037 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(personProto);
+const StudentProto = Object.create(personProto);
+
+StudentProto.init = function (firstName, birthYear, course) {
+  personProto.init.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+const jay = Object.create(StudentProto);
+jay.init('Jay', 2018, 'kfsdhfjdkfkdkf');
+
+console.log(jay);
+
+///// v-217 Another Class Example
+// 1. Public fields
+// 2. Private fields
+// 3. Public methods
+// 4. Private methods
+// there is also static version
+
+class Account {
+  // 1. Public fields (instances)
+  locale = navigator.language;
+
+  // 2. Privet fields
+  #movements = [];
+  #pin;
+
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+
+    // Protected property
+    this.#pin = pin;
+    // this._movements = [];
+    // this.locale = navigator.language;
+
+    console.log(`Thanks for opening an account, ${owner})`);
+  }
+  // Public methods
+
+  // Public Interface
+  getMovements() {
+    return this.#movements;
+  }
+
+  deposit(val) {
+    this.#movements.push(val);
+  }
+
+  withdrow(val) {
+    this.deposit(-val);
+  }
+
+  requestLoan(val) {
+    // if (this.#approvalLoan(val)) {
+    if (this._approvalLoan(val)) {
+      this.deposit(val);
+      console.log('loan approved');
+    }
+  }
+
+  static helper() {
+    console.log('Helper');
+  }
+
+  // 4. Private methods
+  _approvalLoan(val) {
+    return true;
+  }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+// acc1._movements.push(250);
+// acc1._movements.push(-140);
+
+// instade of
+acc1.deposit(250);
+acc1.withdrow(140);
+acc1.requestLoan(1000);
+console.log(acc1.getMovements);
+console.log(acc1); // Object { owner: "Jonas", currency: "EUR", pin: 1111, movements: [] }
+
+//// Data pervecy v-219
+//// We cannot access this variable outside here.
+//// console.log(acc1.#movements); // Syntax eror
+//// console.log(acc1.movements); //undefined
+//// console.log(acc1.#pin); // Syntax error
+console.log(acc1._approvalLoan(100)); //100
+
+Account.helper();
+
+// v-220
